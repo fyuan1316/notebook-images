@@ -9,7 +9,7 @@ ScipyNotebook=scipy-notebook
 gitrepo=docker-stacks
 #
 PytorchNotebook=pytorch-notebook
-Tensorflow-notebook=tensorflow-notebook 
+TensorflowNotebook=tensorflow-notebook
 
 
 base-notebook:
@@ -29,3 +29,5 @@ scipy-notebook-gpu:
 
 pytorch-notebook-gpu:
 	docker build -t ${REGISTRY}/${OWNER}/${PytorchNotebook}${GPU}:${GPUTag} -f pytorch/Dockerfile.gpu pytorch
+tensorflow-notebook-gpu:
+	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${ScipyNotebook}${GPU}:${GPUTag} -t ${REGISTRY}/${OWNER}/${TensorflowNotebook}${GPU}:${GPUTag} -f tensorflow/Dockerfile.gpu tensorflow
