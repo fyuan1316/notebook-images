@@ -47,17 +47,19 @@ tensorflow-notebook-gpu:
 	-t ${REGISTRY}/${OWNER}/${TensorflowNotebook}${GPU}-${TF_VERSION}:${GPUTag} \
 	-f tensorflow/Dockerfile.gpu tensorflow
 
-tf-gpu-tutorial:
-	curl --user yuanfang@alauda.io -L -O http://bitbucket.org/mathildetech/aml-demo/get/master.tar.gz
+tf-gpu-tutorial: clean-tf
+	curl --user yuanfang@alauda.io -L -O http://bitbucket.org/mathildetech/aml-demo/get/master.tar.gz && mkdir tf-demo && tar zxvf master.tar.gz -C tf-demo --strip-components 1 && rm -rf master.tar.gz && mv tf-demo tensorflow/
 	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${TensorflowNotebook}${GPU}-${TF_VERSION}:${GPUTag} \
 	-t ${REGISTRY}/${OWNER}/${TensorflowNotebook}${GPU}-${TF_VERSION}-tutorial:${GPUTag} \
 	-f tensorflow/Dockerfile.demo tensorflow
 
-tf-tutorial:
-	curl --user yuanfang@alauda.io -L -O http://bitbucket.org/mathildetech/aml-demo/get/master.tar.gz && tar zxvf master.tar.gz && rm -rf master.tar.gz
+tf-tutorial: clean-tf
+	curl --user yuanfang@alauda.io -L -O http://bitbucket.org/mathildetech/aml-demo/get/master.tar.gz && mkdir tf-demo && tar zxvf master.tar.gz -C tf-demo --strip-components 1 && rm -rf master.tar.gz && mv tf-demo tensorflow/	
 	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${TensorflowNotebook}-${TF_VERSION} \
 	-t ${REGISTRY}/${OWNER}/${TensorflowNotebook}-${TF_VERSION}-tutorial \
 	-f tensorflow/Dockerfile.demo tensorflow
 
+clean-tf:
+	rm -rf tensorflow/tf-demo
 cleanAll:
 	rm master.tar.gz && rm -rf ${gitrepo} 
