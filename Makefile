@@ -32,4 +32,7 @@ pytorch-notebook-gpu:
 	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${ScipyNotebook}${GPU}:${GPUTag} -t ${REGISTRY}/${OWNER}/${PytorchNotebook}${GPU}:${GPUTag} -f pytorch/Dockerfile.gpu pytorch
 
 tensorflow-notebook-gpu:
-	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${ScipyNotebook}${GPU}:${GPUTag} --build-arg TF_VERSION=${TF_VERSION} -t ${REGISTRY}/${OWNER}/${TensorflowNotebook}${GPU}-${TF_VERSION}:${GPUTag} -f tensorflow/Dockerfile.gpu tensorflow
+	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${ScipyNotebook}${GPU}:${GPUTag} \
+	--build-arg TF_VERSION=${TF_VERSION} \
+	-t ${REGISTRY}/${OWNER}/${TensorflowNotebook}${GPU}-${TF_VERSION}:${GPUTag} \
+	-f tensorflow/Dockerfile.gpu tensorflow
