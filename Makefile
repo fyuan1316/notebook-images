@@ -45,12 +45,12 @@ scipy-notebook-gpu:
 
 pytorch-notebook:
 	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${ScipyNotebook} \
-	-t ${REGISTRY}/${OWNER}/${PytorchNotebook} \
+	-t ${REGISTRY}/${OWNER}/${PytorchNotebook}-${PYTORCH_VERSION} \
 	-f pytorch/Dockerfile.cpu pytorch
 
 pytorch-notebook-gpu:
 	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${ScipyNotebook}${GPU}:${GPUTag} \
-	-t ${REGISTRY}/${OWNER}/${PytorchNotebook}${GPU}:${GPUTag} \
+	-t ${REGISTRY}/${OWNER}/${PytorchNotebook}${GPU}-${PYTORCH_VERSION}:${GPUTag} \
 	-f pytorch/Dockerfile.gpu pytorch
 
 tensorflow-notebook:
