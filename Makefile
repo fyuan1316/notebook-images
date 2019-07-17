@@ -36,3 +36,10 @@ tensorflow-notebook-gpu:
 	--build-arg TF_VERSION=${TF_VERSION} \
 	-t ${REGISTRY}/${OWNER}/${TensorflowNotebook}${GPU}-${TF_VERSION}:${GPUTag} \
 	-f tensorflow/Dockerfile.gpu tensorflow
+
+tf-gpu-tutorial:
+	URL=https://bitbucket.org/mathildetech/aml-demo/src/master/
+	git clone ${URL}
+	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${TensorflowNotebook}${GPU}-${TF_VERSION}:${GPUTag} \
+	-t ${REGISTRY}/${OWNER}/${TensorflowNotebook}${GPU}-${TF_VERSION}-tutorial:${GPUTag} \
+	-f tensorflow/Dockerfile.demo tensorflow
