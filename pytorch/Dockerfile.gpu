@@ -4,7 +4,7 @@ FROM $BASE_CONTAINER
 ARG CUDA="cudatoolkit=10.0"
 
 RUN conda install --quiet --yes \
-    pytorchtorchvision $CUDA -c pytorch && \
+    pytorch torchvision $CUDA -c pytorch && \
     conda clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER && \

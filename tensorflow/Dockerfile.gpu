@@ -5,10 +5,15 @@ ARG TF_VERSION=1.13
 ARG KERAS_VERSION=2.2
 
 # Install Tensorflow
-RUN conda install --quiet --yes \
-    tensorflow-gpu=${TF_VERSION}* \
-    keras-gpu=${KERAS_VERSION}* && \
-    conda clean --all -f -y && \
+#RUN conda install --quiet --yes \
+#    tensorflow-gpu=${TF_VERSION}* \
+#    keras-gpu=${KERAS_VERSION}* && \
+#    conda clean --all -f -y && \
+#    fix-permissions $CONDA_DIR && \
+#    fix-permissions /home/$NB_USER && \
+#    pip install --pre jupyter-tensorboard
+#
+RUN pip install tensorflow-gpu~=${TF_VERSION} keras~=${KERAS_VERSION} && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER && \
-    pip install jupyter-tensorboard
+    pip install --pre jupyter-tensorboard
