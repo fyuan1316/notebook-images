@@ -1,4 +1,4 @@
 ARG BASE_CONTAINER=index.alauda.cn/alaudak8s/tensorflow-notebook-gpu-1.14:10.0-cudnn7-runtime
 FROM ${BASE_CONTAINER}
 
-ADD  aml-demo /home/jovyan/
+ADD  tf-demo /home/jovyan/

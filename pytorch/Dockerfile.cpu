@@ -1,0 +1,9 @@
+ARG BASE_CONTAINER=index.alauda.cn/alaudak8s/scipy-notebook
+FROM $BASE_CONTAINER
+
+RUN conda install --quiet --yes \
+    pytorch-cpu torchvision-cpu -c pytorch && \
+    conda clean --all -f -y && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER && \
+    pip install jupyter-tensorboard
