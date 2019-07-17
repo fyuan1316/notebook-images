@@ -20,22 +20,25 @@ init:
 	wget --no-check-certificate https://github.com/jupyter/docker-stacks/archive/master.tar.gz && tar zxvf master.tar.gz && rm -rf master.tar.gz
 
 base-notebook:
+	docker pull jupyter/base-notebook && \
 	docker tag jupyter/base-notebook ${REGISTRY}/${OWNER}/${BaseNotebook}
-base-notebook-gpu: init 
+base-notebook-gpu:
 	docker build --build-arg BASE_CONTAINER=${BASE_GPU_RUNTIME} \
 	-t ${REGISTRY}/${OWNER}/${BaseNotebook}${GPU}:${GPUTag} \
 	-f ${gitrepo}/${BaseNotebook}/Dockerfile ${gitrepo}/${BaseNotebook}
 
 minimal-notebook:
+	docker pull jupyter/minimal-notebook && \
 	docker tag jupyter/minimal-notebook ${REGISTRY}/${OWNER}/${MinimalNotebook}
-minimal-notebook-gpu: init
+minimal-notebook-gpu:
 	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${BaseNotebook}${GPU}:${GPUTag} \
 	-t ${REGISTRY}/${OWNER}/${MinimalNotebook}${GPU}:${GPUTag} \
 	-f ${gitrepo}/${MinimalNotebook}/Dockerfile ${gitrepo}/${MinimalNotebook}
 
 scipy-notebook:
+	docker pull jupyter/scipy-notebook && \
 	docker tag jupyter/scipy-notebook ${REGISTRY}/${OWNER}/${ScipyNotebook}
-scipy-notebook-gpu: init
+scipy-notebook-gpu:
 	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${MinimalNotebook}${GPU}:${GPUTag} \
 	-t ${REGISTRY}/${OWNER}/${ScipyNotebook}${GPU}:${GPUTag} \
 	-f ${gitrepo}/${ScipyNotebook}/Dockerfile ${gitrepo}/${ScipyNotebook}
@@ -51,7 +54,7 @@ pytorch-notebook-gpu:
 	-f pytorch/Dockerfile.gpu pytorch
 
 tensorflow-notebook:
-	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${ScipyNotebook}\
+	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${ScipyNotebook} \
 	--build-arg TF_VERSION=${TF_VERSION} \
 	--build-arg KERAS_VERSION=${KERAS_VERSION} \
 	-t ${REGISTRY}/${OWNER}/${TensorflowNotebook}-${TF_VERSION} \
