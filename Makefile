@@ -86,12 +86,12 @@ prepare-pytorch-tutorial:clean-tf
 pytorch-gpu-tutorial:
 	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${PytorchNotebook}${GPU}-${PYTORCH_VERSION}:${GPUTag} \
 	-t ${REGISTRY}/${OWNER}/${PytorchNotebook}${GPU}-${PYTORCH_VERSION}-tutorial:${GPUTag} \
-	-f tensorflow/Dockerfile.demo pytorch
+	-f pytorch/Dockerfile.demo pytorch
 
 pytorch-tutorial:
 	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${PytorchNotebook}-${PYTORCH_VERSION} \
 	-t ${REGISTRY}/${OWNER}/${PytorchNotebook}-${PYTORCH_VERSION}-tutorial \
-	-f tensorflow/Dockerfile.demo pytorch
+	-f pytorch/Dockerfile.demo pytorch
 
 
 

@@ -1,4 +1,4 @@
 ARG BASE_CONTAINER=index.alauda.cn/alaudak8s/pytorch-notebook-gpu-1.1:10.0-cudnn7-runtime
 FROM ${BASE_CONTAINER}
 
-ADD  pytorch-demo /home/jovyan/
+ADD  pytorch-demo /home/jovyan/tutorials
