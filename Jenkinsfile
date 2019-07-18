@@ -63,22 +63,26 @@ pipeline{
         }
         stage('gen-images'){
             steps{
-                script{
-                    echo "gen images"
-                    println "${BUILDSH}"
-                    
+                container('tools') { 
+                    script{
+                        echo "gen images"
+                        println "${BUILDSH}"
+                        sh "${BUILDSH}"
 
+                    }
                 }
             }
         }
         stage('push-images'){
             steps{
-                script{
-                    echo "push images"
-                    println "${PUSHSH}"
+                container('tools') { 
+                    script{
+                        echo "push images"
+                        println "${PUSHSH}"
+                        sh "${PUSHSH}"
+                    }
                 }
             }
         }
-        
     }
 }
