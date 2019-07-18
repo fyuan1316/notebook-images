@@ -36,9 +36,10 @@ pipeline{
                         plst.add(printf("%s:%s",name${name}))
                     }
                     println('plst')
-                    plst.each(
-                        println ${it}
-                    )
+                    plst.each{
+                        println "${it}"
+                    }
+
                     def map=[
                         'script':cfg.${Target}.script,
                         'params':plst,
