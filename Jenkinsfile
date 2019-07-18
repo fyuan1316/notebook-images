@@ -29,11 +29,11 @@ pipeline{
                     echo "pre"
                     def cfg = readYaml file: 'config.yaml' 
                     def plst = []
-                    cfg.${Target}.params.each{ p->
+                    cfg.${Target}.params.each { p->
                         def name = ${p}
                         println(p)
                         println(name)
-                        plst.add(printf("%s:%s",name${name})
+                        plst.add(printf("%s:%s",name${name}))
                     }
                     println('plst')
                     plst.each(
