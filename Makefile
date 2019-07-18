@@ -99,3 +99,31 @@ clean-tf:
 	rm -rf tensorflow/tf-demo
 cleanAll:
 	rm master.tar.gz && rm -rf ${gitrepo} 
+
+
+TRAINING_TF_VERSION=1.14
+TRAINING_PYTORCH_VERSION=1.1.0
+TRAINING_PYTORCH_TAG=1.1.0-cuda10.0-cudnn7.5-runtime 
+PYTHON_VERSION=-py3
+
+sync-tf:
+	docker pull tensorflow/tensorflow:${TRAINING_TF_VERSION}${PYTHON_VERSION} && \
+	docker tag tensorflow/tensorflow:${TRAINING_TF_VERSION}${PYTHON_VERSION} ${REGISTRY}/${OWNER}/tensorflow:${TRAINING_TF_VERSION}
+
+sync-tf-gpu:
+	docker pull tensorflow/tensorflow:${TRAINING_TF_VERSION}-gpu${PYTHON_VERSION} && \
+	docker tag tensorflow/tensorflow:${TRAINING_TF_VERSION}-gpu${PYTHON_VERSION} ${REGISTRY}/${OWNER}/tensorflow:${TRAINING_TF_VERSION}-gpu
+
+sync-pytorch:
+	docker pull tensorflow/tensorflow:${TRAINING_PYTORCH_TAG} && \
+	docker tag tensorflow/tensorflow:${TRAINING_PYTORCH_TAG} ${REGISTRY}/${OWNER}/pytorch:${TRAINING_PYTORCH_TAG}
+
+SERVING_TF_VERSION=1.13
+
+sync-tfserving:
+	docker pull tensorflow/serving:${SERVING_TF_VERSION} && \
+	docker tag tensorflow/serving:${SERVING_TF_VERSION} ${REGISTRY}/${OWNER}/tensorflow-serving:${SERVING_TF_VERSION}
+
+sync-tfserving-gpu:
+	docker pull tensorflow/serving:${SERVING_TF_VERSION}-gpu && \
+	docker tag tensorflow/serving:${SERVING_TF_VERSION}-gpu ${REGISTRY}/${OWNER}/tensorflow-serving:${SERVING_TF_VERSION}-gpu
