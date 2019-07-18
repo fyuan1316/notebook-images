@@ -28,24 +28,25 @@ pipeline{
                 script{
                     echo "pre"
                     def cfg = readYaml file: 'config.yaml' 
-                    def plst = []
-                    cfg.${Target}.params.each { p->
-                        def name = ${p}
-                        println(p)
-                        println(name)
-                        plst.add(printf("%s:%s",name${name}))
+                    def pmap = [:]
+                    
+                    cfg[params.Target].params.each { p->
+                        def name = params."${p}"
+                        // println(p)
+                        // println(name)
+                        pmap.put(p,name)
                     }
-                    println('plst')
-                    plst.each{
-                        println "${it}"
+                    println('pmap')
+                    pmap.each{
+                        println "${it.key}:${it.value}"
                     }
 
                     def map=[
                         'script':cfg.${Target}.script,
-                        'params':plst,
+                        'params':pmap,
                         ]
                     
-                    def out = img.genSh(map)
+                    def out = img.genBuildSh(map)
                     println out
                 }
             }
