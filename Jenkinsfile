@@ -17,8 +17,8 @@ pipeline{
 
 	}
     environment {
-		buildSh = ''
-        pushSh = ''
+		BUILDSH = ''
+        PUSHSH = ''
     }
 
     stages{
@@ -50,10 +50,13 @@ pipeline{
                         'params':pmap,
                         ]
                     
-                    env.buildSh = img.genBuildSh(map)
-                    println env.buildSh
-                    env.pushSh = img.genPushSh(map)
-                    println env.pushSh
+                    BUILDSH = img.genBuildSh(map)
+                    // println "${env.BUILDSH}"
+                    println "${BUILDSH}"
+                    PUSHSH = img.genPushSh(map)
+                    // println "${env.PUSHSH}"
+                    println "${PUSHSH}"
+                    
 
                 }
             }
@@ -62,6 +65,9 @@ pipeline{
             steps{
                 script{
                     echo "gen images"
+                    println "${BUILDSH}"
+                    
+
                 }
             }
         }
@@ -69,6 +75,7 @@ pipeline{
             steps{
                 script{
                     echo "push images"
+                    println "${PUSHSH}"
                 }
             }
         }
