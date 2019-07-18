@@ -18,7 +18,7 @@ pipeline{
 		string(name: 'PRODUCT', defaultValue: 'acp', description: 'The product , it supports acp or aml now')
 	}
 
-    
+
     stages{
         stage('prepare'){
             steps{
@@ -29,6 +29,8 @@ pipeline{
                 script{
                     echo "pre"
                     def map=['script':'im a script']
+
+                    def cfg = readYaml file: 'config.yaml' 
                     def out = img.genSh(map)
                     println out
                 }
