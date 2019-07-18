@@ -1,6 +1,6 @@
 baseNotebook:
   script: docker pull ${OriginalImage} && docker tag ${OriginalImage} ${REGISTRY}/${OWNER}/${ImageName}
-  push: docker push ${REGISTRY}/\${OWNER}/\${ImageName}
+  push: docker push ${REGISTRY}/${OWNER}/${ImageName}
   params:
     - REGISTRY
     - OWNER

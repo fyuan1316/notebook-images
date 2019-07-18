@@ -16,7 +16,10 @@ pipeline{
 
 
 	}
-
+    environment {
+		buildSh = ''
+        pushSh = ''
+    }
 
     stages{
         stage('prepare'){
@@ -43,11 +46,15 @@ pipeline{
 
                     def map=[
                         'script':cfg[params.Target].script,
+                        'push':cfg[params.Target].push,
                         'params':pmap,
                         ]
                     
-                    def out = img.genBuildSh(map)
-                    println out
+                    env.buildSh = img.genBuildSh(map)
+                    println env.buildSh
+                    env.pushSh = img.genPushSh(map)
+                    println env.pushSh
+
                 }
             }
         }
