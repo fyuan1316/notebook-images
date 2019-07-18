@@ -1,9 +1,9 @@
 baseNotebook:
-  script: docker pull \${OriginalImage} && docker tag \${OriginalImage} \${REGISTRY}/\${OWNER}/\${BaseNotebook}
+  script: docker pull \${OriginalImage} && docker tag \${OriginalImage} \${REGISTRY}/\${OWNER}/\${ImageName}
   params:
     - REGISTRY
     - OWNER
-    - BaseNotebook
+    - ImageName
     - OriginalImage
 baseNotebookGpu:
   script: docker build --build-arg BASE_CONTAINER=\${BASE_GPU_RUNTIME} -t \${REGISTRY}/\${OWNER}/\${BaseNotebook}\${GPU}:\${GPUTag} -f \${gitrepo}/\${BaseNotebook}/Dockerfile \${gitrepo}/\${BaseNotebook}
