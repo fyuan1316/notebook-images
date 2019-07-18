@@ -31,7 +31,7 @@ pipeline{
                     def map=['script':'im a script']
 
                     def cfg = readYaml file: 'config.yaml' 
-                    def out = img.genSh(cfg.base-notebook.script)
+                    def out = img.genSh(cfg.baseNotebook.script)
                     println out
                 }
             }
