@@ -42,7 +42,7 @@ pipeline{
                     }
 
                     def map=[
-                        'script':cfg.${Target}.script,
+                        'script':cfg[params.Target].script,
                         'params':pmap,
                         ]
                     
