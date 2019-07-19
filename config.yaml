@@ -1,16 +1,198 @@
 baseNotebook:
-  script: docker build --build-arg BASE_CONTAINER=${OriginalImage} -t ${REGISTRY}/${OWNER}/${ImageName} -f sync/Dockerfile sync
-  push: docker push ${REGISTRY}/${OWNER}/${ImageName}
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/base-notebook -f sync/Dockerfile sync
+  push: docker push ${REGISTRY}/${OWNER}/base-notebook
   pushCredentialId: default-dockerpush
   params:
     - REGISTRY
     - OWNER
-    - ImageName
-    - OriginalImage
+    - ORIGINAL_IMAGE
 baseNotebookGpu:
-  script: docker build --build-arg BASE_CONTAINER=\${BASE_GPU_RUNTIME} -t \${REGISTRY}/\${OWNER}/\${BaseNotebook}\${GPU}:\${GPUTag} -f \${gitrepo}/\${BaseNotebook}/Dockerfile \${gitrepo}/\${BaseNotebook}
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/base-notebook:${GPU_RUNTIME_TAG} -f docker-stacks-master/base-notebook/Dockerfile docker-stacks-master/base-notebook
+  push: docker push ${REGISTRY}/${OWNER}/base-notebook:${GPU_RUNTIME_TAG}
+  pushCredentialId: default-dockerpush
   params:
     - REGISTRY
     - OWNER
-    - BaseNotebook
-    - BASE_GPU_IMAGE
+    - GPU_RUNTIME_TAG
+    - ORIGINAL_IMAGE
+
+minimalNotebook:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/minimal-notebook -f sync/Dockerfile sync
+  push: docker push ${REGISTRY}/${OWNER}/minimal-notebook
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - ORIGINAL_IMAGE
+
+minimalNotebookGpu:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/minimal-notebook:${GPU_RUNTIME_TAG} -f docker-stacks-master/minimal-notebook/Dockerfile docker-stacks-master/minimal-notebook
+  push: docker push ${REGISTRY}/${OWNER}/minimal-notebook:${GPU_RUNTIME_TAG}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - GPU_RUNTIME_TAG
+    - ORIGINAL_IMAGE
+
+scipyNotebook:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/scipy-notebook -f sync/Dockerfile sync
+  push: docker push ${REGISTRY}/${OWNER}/scipy-notebook
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - ORIGINAL_IMAGE
+
+scipyNotebookGpu:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/scipy-notebook:${GPU_RUNTIME_TAG} -f docker-stacks-master/scipy-notebook/Dockerfile docker-stacks-master/scipy-notebook
+  push: docker push ${REGISTRY}/${OWNER}/scipy-notebook:${GPU_RUNTIME_TAG}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - GPU_RUNTIME_TAG
+    - ORIGINAL_IMAGE
+
+pytorchNotebook:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/pytorch-notebook:${PYTORCH_VERSION} -f pytorch/Dockerfile.cpu pytorch
+  push: docker push ${REGISTRY}/${OWNER}/pytorch-notebook:${PYTORCH_VERSION}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - ORIGINAL_IMAGE
+    - PYTORCH_VERSION
+
+pytorchNotebookGpu:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/pytorch-notebook:${PYTORCH_VERSION}-${GPU_RUNTIME_TAG} -f pytorch/Dockerfile.gpu pytorch
+  push: docker push ${REGISTRY}/${OWNER}/pytorch-notebook:${PYTORCH_VERSION}-${GPU_RUNTIME_TAG}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - GPU_RUNTIME_TAG
+    - ORIGINAL_IMAGE
+    - PYTORCH_VERSION
+
+tensorflowNotebook:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/tensorflow-notebook:${TF_VERSION} --build-arg TF_VERSION=${TF_VERSION} --build-arg KERAS_VERSION=${KERAS_VERSION} -f tensorflow/Dockerfile.cpu tensorflow
+  push: docker push ${REGISTRY}/${OWNER}/tensorflow-notebook:${TF_VERSION}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - ORIGINAL_IMAGE
+    - TF_VERSION
+    - KERAS_VERSION
+
+tensorflowNotebookGpu:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/tensorflow-notebook:${TF_VERSION}-${GPU_RUNTIME_TAG} --build-arg TF_VERSION=${TF_VERSION} --build-arg KERAS_VERSION=${KERAS_VERSION}-f tensorflow/Dockerfile.gpu tensorflow
+  push: docker push ${REGISTRY}/${OWNER}/tensorflow-notebook:${TF_VERSION}-${GPU_RUNTIME_TAG}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - GPU_RUNTIME_TAG
+    - ORIGINAL_IMAGE
+    - TF_VERSION
+    - KERAS_VERSION
+
+tensorflowTutorial:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/tensorflow-notebook-tutorial:${TF_VERSION} --build-arg TF_VERSION=${TF_VERSION} --build-arg KERAS_VERSION=${KERAS_VERSION} -f tensorflow/Dockerfile.demo tensorflow
+  push: docker push ${REGISTRY}/${OWNER}/tensorflow-notebook-tutorial:${TF_VERSION}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - ORIGINAL_IMAGE
+    - TF_VERSION
+    - KERAS_VERSION
+
+tensorflowTutorialGpu:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/tensorflow-notebook-tutorial:${TF_VERSION}-${GPU_RUNTIME_TAG} --build-arg TF_VERSION=${TF_VERSION} --build-arg KERAS_VERSION=${KERAS_VERSION}-f tensorflow/Dockerfile.demo tensorflow
+  push: docker push ${REGISTRY}/${OWNER}/tensorflow-notebook-tutorial:${TF_VERSION}-${GPU_RUNTIME_TAG}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - GPU_RUNTIME_TAG
+    - ORIGINAL_IMAGE
+    - TF_VERSION
+    - KERAS_VERSION
+
+pytorchTutorial:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/pytorch-notebook-tutorial:${PYTORCH_VERSION} -f pytorch/Dockerfile.demo pytorch
+  push: docker push ${REGISTRY}/${OWNER}/pytorch-notebook-tutorial:${PYTORCH_VERSION}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - ORIGINAL_IMAGE
+    - PYTORCH_VERSION
+
+pytorchTutorialGpu:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/pytorch-notebook-tutorial:${PYTORCH_VERSION}-${GPU_RUNTIME_TAG} -f pytorch/Dockerfile.demo pytorch
+  push: docker push ${REGISTRY}/${OWNER}/pytorch-notebook-tutorial:${PYTORCH_VERSION}-${GPU_RUNTIME_TAG}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - GPU_RUNTIME_TAG
+    - ORIGINAL_IMAGE
+    - PYTORCH_VERSION
+
+# training 
+tensorflow:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/tensorflow:${TF_VERSION} -f sync/Dockerfile sync
+  push: docker push ${REGISTRY}/${OWNER}/tensorflow:${TF_VERSION}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - ORIGINAL_IMAGE
+    - TF_VERSION
+
+tensorflowGpu:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/tensorflow:${TF_VERSION}-${GPU_RUNTIME_TAG} -f sync/Dockerfile sync
+  push: docker push ${REGISTRY}/${OWNER}/tensorflow:${TF_VERSION}-${GPU_RUNTIME_TAG}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - GPU_RUNTIME_TAG
+    - ORIGINAL_IMAGE
+    - TF_VERSION
+
+pytorch:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/pytorch:${PYTORCH_VERSION}-${GPU_RUNTIME_TAG} -f sync/Dockerfile sync
+  push: docker push ${REGISTRY}/${OWNER}/pytorch:${PYTORCH_VERSION}-${GPU_RUNTIME_TAG}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - GPU_RUNTIME_TAG
+    - ORIGINAL_IMAGE
+    - PYTORCH_VERSION
+
+#serving
+tensorflowServing:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/tensorflow-serving:${TF_VERSION} -f sync/Dockerfile sync
+  push: docker push ${REGISTRY}/${OWNER}/tensorflow-serving:${TF_VERSION}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - ORIGINAL_IMAGE
+    - TF_VERSION
+
+tensorflowServingGpu:
+  script: docker build --build-arg BASE_CONTAINER=${ORIGINAL_IMAGE} -t ${REGISTRY}/${OWNER}/tensorflow-serving:${TF_VERSION}-${GPU_RUNTIME_TAG} -f sync/Dockerfile sync
+  push: docker push ${REGISTRY}/${OWNER}/tensorflow-serving:${TF_VERSION}-${GPU_RUNTIME_TAG}
+  pushCredentialId: default-dockerpush
+  params:
+    - REGISTRY
+    - OWNER
+    - GPU_RUNTIME_TAG
+    - ORIGINAL_IMAGE
+    - TF_VERSION
