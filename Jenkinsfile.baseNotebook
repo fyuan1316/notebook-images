@@ -1,6 +1,6 @@
 pipeline{
     agent {
-        label 'aml'
+        label 'golang-1.11'
     }
     parameters {
 		string(name: 'TARGET', defaultValue: 'baseNotebook', description: 'Image build target e.g. baseNotebook')
