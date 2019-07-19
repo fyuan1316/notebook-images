@@ -19,7 +19,7 @@ pipeline{
         stage('prepare'){
             steps{
                 
-                library identifier: 'genimage-sharelib@master', retriever: modernSCM(
+                library identifier: 'genimage-sharelib@dev', retriever: modernSCM(
                 [$class: 'GitSCMSource',
                 remote: 'https://github.com/fyuan1316/gen-image-sharelib.git',
                 credentialsId: ''])
