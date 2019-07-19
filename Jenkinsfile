@@ -85,7 +85,7 @@ pipeline{
                     script{
                         echo "push images"
                         retry(3) {
-                            if (image.credentialId != '') {
+                            if (${CREDENTIALID} != '') {
                                 withCredentials([usernamePassword(credentialsId: ${CREDENTIALID}, passwordVariable: 'PASSWD', usernameVariable: 'USER')]) {
                                     sh "docker login ${params.REGISTRY}/${params.OWNER} -u ${USER} -p ${PASSWD}"
                                 }
