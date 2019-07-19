@@ -20,24 +20,28 @@ init:
 	wget --no-check-certificate https://github.com/jupyter/docker-stacks/archive/master.tar.gz && tar zxvf master.tar.gz && rm -rf master.tar.gz
 
 base-notebook:
-	docker pull jupyter/base-notebook && \
-	docker tag jupyter/base-notebook ${REGISTRY}/${OWNER}/${BaseNotebook}
+	docker build --build-arg BASE_CONTAINER=jupyter/base-notebook \
+	-t ${REGISTRY}/${OWNER}/${BaseNotebook} \
+	-f sync/Dockerfile sync
+
 base-notebook-gpu:
 	docker build --build-arg BASE_CONTAINER=${BASE_GPU_RUNTIME} \
 	-t ${REGISTRY}/${OWNER}/${BaseNotebook}${GPU}:${GPUTag} \
 	-f ${gitrepo}/${BaseNotebook}/Dockerfile ${gitrepo}/${BaseNotebook}
 
 minimal-notebook:
-	docker pull jupyter/minimal-notebook && \
-	docker tag jupyter/minimal-notebook ${REGISTRY}/${OWNER}/${MinimalNotebook}
+	docker build --build-arg BASE_CONTAINER=jupyter/minimal-notebook \
+	-t ${REGISTRY}/${OWNER}/${MinimalNotebook} \
+	-f sync/Dockerfile sync
 minimal-notebook-gpu:
 	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${BaseNotebook}${GPU}:${GPUTag} \
 	-t ${REGISTRY}/${OWNER}/${MinimalNotebook}${GPU}:${GPUTag} \
 	-f ${gitrepo}/${MinimalNotebook}/Dockerfile ${gitrepo}/${MinimalNotebook}
 
 scipy-notebook:
-	docker pull jupyter/scipy-notebook && \
-	docker tag jupyter/scipy-notebook ${REGISTRY}/${OWNER}/${ScipyNotebook}
+	docker build --build-arg BASE_CONTAINER=jupyter/scipy-notebook \
+	-t ${REGISTRY}/${OWNER}/${ScipyNotebook} \
+	-f sync/Dockerfile sync
 scipy-notebook-gpu:
 	docker build --build-arg BASE_CONTAINER=${REGISTRY}/${OWNER}/${MinimalNotebook}${GPU}:${GPUTag} \
 	-t ${REGISTRY}/${OWNER}/${ScipyNotebook}${GPU}:${GPUTag} \
@@ -107,23 +111,28 @@ TRAINING_PYTORCH_TAG=1.1.0-cuda10.0-cudnn7.5-runtime
 PYTHON_VERSION=-py3
 
 sync-tf:
-	docker pull tensorflow/tensorflow:${TRAINING_TF_VERSION}${PYTHON_VERSION} && \
-	docker tag tensorflow/tensorflow:${TRAINING_TF_VERSION}${PYTHON_VERSION} ${REGISTRY}/${OWNER}/tensorflow:${TRAINING_TF_VERSION}
+	docker build --build-arg BASE_CONTAINER=tensorflow/tensorflow:${TRAINING_TF_VERSION}${PYTHON_VERSION}  \
+	-t ${REGISTRY}/${OWNER}/tensorflow:${TRAINING_TF_VERSION} \
+	-f sync/Dockerfile sync
 
 sync-tf-gpu:
-	docker pull tensorflow/tensorflow:${TRAINING_TF_VERSION}-gpu${PYTHON_VERSION} && \
-	docker tag tensorflow/tensorflow:${TRAINING_TF_VERSION}-gpu${PYTHON_VERSION} ${REGISTRY}/${OWNER}/tensorflow:${TRAINING_TF_VERSION}-gpu
+	docker build --build-arg BASE_CONTAINER=tensorflow/tensorflow:${TRAINING_TF_VERSION}-gpu${PYTHON_VERSION}  \
+	-t ${REGISTRY}/${OWNER}/tensorflow:${TRAINING_TF_VERSION}-gpu \
+	-f sync/Dockerfile sync
 
 sync-pytorch:
-	docker pull tensorflow/tensorflow:${TRAINING_PYTORCH_TAG} && \
-	docker tag tensorflow/tensorflow:${TRAINING_PYTORCH_TAG} ${REGISTRY}/${OWNER}/pytorch:${TRAINING_PYTORCH_TAG}
+	docker build --build-arg BASE_CONTAINER=pytorch/pytorch:${TRAINING_PYTORCH_TAG} \
+	-t ${REGISTRY}/${OWNER}/pytorch:${TRAINING_PYTORCH_TAG} \
+	-f sync/Dockerfile sync
 
 SERVING_TF_VERSION=1.13
 
 sync-tfserving:
-	docker pull tensorflow/serving:${SERVING_TF_VERSION} && \
-	docker tag tensorflow/serving:${SERVING_TF_VERSION} ${REGISTRY}/${OWNER}/tensorflow-serving:${SERVING_TF_VERSION}
+	docker build --build-arg BASE_CONTAINER=tensorflow/serving:${SERVING_TF_VERSION} \
+	-t ${REGISTRY}/${OWNER}/tensorflow-serving:${SERVING_TF_VERSION} \
+	-f sync/Dockerfile sync
 
 sync-tfserving-gpu:
-	docker pull tensorflow/serving:${SERVING_TF_VERSION}-gpu && \
-	docker tag tensorflow/serving:${SERVING_TF_VERSION}-gpu ${REGISTRY}/${OWNER}/tensorflow-serving:${SERVING_TF_VERSION}-gpu
+	docker build --build-arg BASE_CONTAINER=tensorflow/serving:${SERVING_TF_VERSION}-gpu \
+	-t ${REGISTRY}/${OWNER}/tensorflow-serving:${SERVING_TF_VERSION}-gpu \
+	-f sync/Dockerfile sync
