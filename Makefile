@@ -1,5 +1,5 @@
 REGISTRY?=index.alauda.cn
-OWNER?=alaudak8s
+OWNER?=alaudaorg
 GPUTag?=10.0-cudnn7-runtime
 BASE_GPU_RUNTIME?=nvidia/cuda:${GPUTag}
 GPU=
