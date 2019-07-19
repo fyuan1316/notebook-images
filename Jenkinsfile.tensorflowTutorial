@@ -3,8 +3,10 @@ pipeline{
         label 'aml'
     }
     parameters {
-		string(name: 'TARGET', defaultValue: 'baseNotebook', description: 'Image build target e.g. baseNotebook')
-		string(name: 'ORIGINAL_IMAGE', defaultValue: 'jupyter/base-notebook', description: '构建的父镜像')
+		string(name: 'TARGET', defaultValue: 'tensorflowTutorial', description: 'Image build target e.g. baseNotebook')
+		string(name: 'ORIGINAL_IMAGE', defaultValue: 'index.alauda.cn/alaudaorg/tensorflow-notebook:1.14.0', description: '构建的父镜像')
+        string(name: 'TF_VERSION', defaultValue: '1.14.0', description: '')
+        string(name: 'KERAS_VERSION', defaultValue: '2.2', description: '')
         string(name: 'REGISTRY', defaultValue: 'index.alauda.cn', description: '')
 		string(name: 'OWNER', defaultValue: 'alaudaorg', description: '')
 	}
@@ -21,30 +23,32 @@ pipeline{
                 [$class: 'GitSCMSource',
                 remote: 'https://github.com/fyuan1316/gen-image-sharelib.git',
                 credentialsId: ''])
-                script{
-                    echo "pre"
-                    def cfg = readYaml file: 'config.yaml' 
-                    def pmap = [:]
-                    cfg[params.TARGET].params.each { p->
-                        def name = params."${p}"
-                        pmap.put(p,name)
+                container('tools') {
+                    script{
+                        echo "pre"
+                        def cfg = readYaml file: 'config.yaml' 
+                        def pmap = [:]
+                        cfg[params.TARGET].params.each { p->
+                            def name = params."${p}"
+                            pmap.put(p,name)
+                        }
+                        println('pmap')
+                        pmap.each{
+                            println "${it.key}:${it.value}"
+                        }
+                        def map=[
+                            'script':cfg[params.TARGET].script,
+                            'push':cfg[params.TARGET].push,
+                            'params':pmap,
+                            ]
+                        BUILDSH = img.genBuildSh(map)
+                        // println "${env.BUILDSH}"
+                        println "${BUILDSH}"
+                        PUSHSH = img.genPushSh(map)
+                        // println "${env.PUSHSH}"
+                        println "${PUSHSH}"
+                        CREDENTIALID = cfg[params.TARGET].pushCredentialId
                     }
-                    println('pmap')
-                    pmap.each{
-                        println "${it.key}:${it.value}"
-                    }
-                    def map=[
-                        'script':cfg[params.TARGET].script,
-                        'push':cfg[params.TARGET].push,
-                        'params':pmap,
-                        ]
-                    BUILDSH = img.genBuildSh(map)
-                    // println "${env.BUILDSH}"
-                    println "${BUILDSH}"
-                    PUSHSH = img.genPushSh(map)
-                    // println "${env.PUSHSH}"
-                    println "${PUSHSH}"
-                    CREDENTIALID = cfg[params.TARGET].pushCredentialId
                 }
             }
         }

@@ -1,0 +1,72 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: build-image-base-notebook
+spec:
+  entrypoint: api
+  # pull secrets for the images
+  imagePullSecrets:
+  - name: dockerhub
+  arguments:
+    parameters:
+    - name: repo
+      value: https://github.com/fyuan1316/notebook-images.git
+    - name: revision
+      value: master
+    # - name: gitSecretName
+    #   value: git-secret
+    - name: dockerSecretName
+      value: dockerpush
+
+  templates:
+  - name: api
+    steps:
+    - - name: build
+        template: ci-dind
+        arguments:
+          parameters:
+          - name: cmd
+            value: "{{item}}"
+        withItems:
+        - make base-notebook && make push-base-notebook
+
+  - name: ci-dind
+    inputs:
+      parameters:
+      - name: cmd
+      artifacts:
+      - name: code
+        path: /src
+        git:
+          repo: "{{workflow.parameters.repo}}"
+          revision: "{{workflow.parameters.revision}}"
+          # sshPrivateKeySecret:
+          #   name: "{{workflow.parameters.gitSecretName}}"
+          #   key: sshPrivateKey
+    container:
+      image: docker:stable
+      command: [sh, -c]
+      args: ["until docker ps; do sleep 3; done && {{inputs.parameters.cmd}}"]
+      workingDir: /src
+      volumeMounts:
+        - name: docker-volume
+          mountPath: "/root/.docker"
+          readOnly: true
+      env:
+      - name: DOCKER_HOST
+        value: 127.0.0.1
+    sidecars:
+    - name: dind
+      image: docker:stable-dind
+      securityContext:
+        privileged: true
+      mirrorVolumeMounts: true
+
+  volumes:
+  - name: docker-volume
+    secret:
+      secretName: "{{workflow.parameters.dockerSecretName}}"
+      defaultMode: 0600
+      items:
+      - key: .dockerconfigjson
+        path: config.json
