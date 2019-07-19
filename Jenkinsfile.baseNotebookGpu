@@ -19,7 +19,7 @@ pipeline{
         stage('prepare'){
             steps{
                 sh """
-                    wget --no-check-certificate https://github.com/jupyter/docker-stacks/archive/7b960e4.tar.gz.tar.gz && tar zxvf 7b960e4.tar.gz && rm -rf 7b960e4.tar.gz &&  mv docker-stacks-7b960e4 docker-stacks-master
+                    wget --no-check-certificate https://github.com/jupyter/docker-stacks/archive/7b960e4.tar.gz && tar zxvf 7b960e4.tar.gz && rm -rf 7b960e4.tar.gz &&  mv docker-stacks-7b960e4* docker-stacks-master
                 """
                 library identifier: 'genimage-sharelib@master', retriever: modernSCM(
                 [$class: 'GitSCMSource',
