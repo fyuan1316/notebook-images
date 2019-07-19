@@ -35,34 +35,26 @@ pipeline{
                     echo "pre"
                     def cfg = readYaml file: 'config.yaml' 
                     def pmap = [:]
-                    
                     cfg[params.Target].params.each { p->
                         def name = params."${p}"
-                        // println(p)
-                        // println(name)
                         pmap.put(p,name)
                     }
                     println('pmap')
                     pmap.each{
                         println "${it.key}:${it.value}"
                     }
-
                     def map=[
                         'script':cfg[params.Target].script,
                         'push':cfg[params.Target].push,
                         'params':pmap,
                         ]
-                    
                     BUILDSH = img.genBuildSh(map)
                     // println "${env.BUILDSH}"
                     println "${BUILDSH}"
                     PUSHSH = img.genPushSh(map)
                     // println "${env.PUSHSH}"
                     println "${PUSHSH}"
-
                     CREDENTIALID = cfg[params.Target].pushCredentialId
-                    
-
                 }
             }
         }
@@ -85,8 +77,8 @@ pipeline{
                     script{
                         echo "push images"
                         retry(3) {
-                            if (${CREDENTIALID} != '') {
-                                withCredentials([usernamePassword(credentialsId: ${CREDENTIALID}, passwordVariable: 'PASSWD', usernameVariable: 'USER')]) {
+                            if ("${CREDENTIALID}" != '') {
+                                withCredentials([usernamePassword(credentialsId: "${CREDENTIALID}", passwordVariable: 'PASSWD', usernameVariable: 'USER')]) {
                                     sh "docker login ${params.REGISTRY}/${params.OWNER} -u ${USER} -p ${PASSWD}"
                                 }
                             }
