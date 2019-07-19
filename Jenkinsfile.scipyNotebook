@@ -1,11 +1,10 @@
 pipeline{
     agent {
-        label 'aml'
+        label 'golang-1.11'
     }
     parameters {
-		string(name: 'TARGET', defaultValue: 'baseNotebookGpu', description: 'Image build target e.g. baseNotebook')
-		string(name: 'ORIGINAL_IMAGE', defaultValue: 'nvidia/cuda:10.0-cudnn7-runtime', description: '构建的父镜像')
-        string(name: 'GPU_RUNTIME_TAG', defaultValue: '10.0-cudnn7-runtime', description: '')
+		string(name: 'TARGET', defaultValue: 'scipyNotebook', description: 'Image build target e.g. baseNotebook')
+		string(name: 'ORIGINAL_IMAGE', defaultValue: 'jupyter/scipy-notebook', description: '构建的父镜像')
         string(name: 'REGISTRY', defaultValue: 'index.alauda.cn', description: '')
 		string(name: 'OWNER', defaultValue: 'alaudaorg', description: '')
 	}
@@ -18,39 +17,34 @@ pipeline{
     stages{
         stage('prepare'){
             steps{
-                sh """
-                    wget --no-check-certificate https://github.com/jupyter/docker-stacks/archive/7b960e4.tar.gz && tar zxvf 7b960e4.tar.gz && rm -rf 7b960e4.tar.gz &&  mv docker-stacks-7b960e4* docker-stacks-master
-                """
                 library identifier: 'genimage-sharelib@master', retriever: modernSCM(
                 [$class: 'GitSCMSource',
                 remote: 'https://github.com/fyuan1316/gen-image-sharelib.git',
                 credentialsId: ''])
-                container('tools') {
-                    script{
-                        echo "pre"
-                        def cfg = readYaml file: 'config.yaml' 
-                        def pmap = [:]
-                        cfg[params.TARGET].params.each { p->
-                            def name = params."${p}"
-                            pmap.put(p,name)
-                        }
-                        println('pmap')
-                        pmap.each{
-                            println "${it.key}:${it.value}"
-                        }
-                        def map=[
-                            'script':cfg[params.TARGET].script,
-                            'push':cfg[params.TARGET].push,
-                            'params':pmap,
-                            ]
-                        BUILDSH = img.genBuildSh(map)
-                        // println "${env.BUILDSH}"
-                        println "${BUILDSH}"
-                        PUSHSH = img.genPushSh(map)
-                        // println "${env.PUSHSH}"
-                        println "${PUSHSH}"
-                        CREDENTIALID = cfg[params.TARGET].pushCredentialId
+                script{
+                    echo "pre"
+                    def cfg = readYaml file: 'config.yaml' 
+                    def pmap = [:]
+                    cfg[params.TARGET].params.each { p->
+                        def name = params."${p}"
+                        pmap.put(p,name)
                     }
+                    println('pmap')
+                    pmap.each{
+                        println "${it.key}:${it.value}"
+                    }
+                    def map=[
+                        'script':cfg[params.TARGET].script,
+                        'push':cfg[params.TARGET].push,
+                        'params':pmap,
+                        ]
+                    BUILDSH = img.genBuildSh(map)
+                    // println "${env.BUILDSH}"
+                    println "${BUILDSH}"
+                    PUSHSH = img.genPushSh(map)
+                    // println "${env.PUSHSH}"
+                    println "${PUSHSH}"
+                    CREDENTIALID = cfg[params.TARGET].pushCredentialId
                 }
             }
         }
