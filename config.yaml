@@ -1,5 +1,5 @@
 baseNotebook:
-  script: docker pull ${OriginalImage} && docker tag ${OriginalImage} ${REGISTRY}/${OWNER}/${ImageName}
+  script: docker build --build-arg BASE_CONTAINER=${OriginalImage} -t ${REGISTRY}/${OWNER}/${ImageName} -f sync/Dockerfile sync
   push: docker push ${REGISTRY}/${OWNER}/${ImageName}
   pushCredentialId: default-dockerpush
   params:
