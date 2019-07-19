@@ -1,5 +1,7 @@
 pipeline{
-    agent any
+    agent {
+        label 'aml'
+    }
     parameters {
 		string(name: 'Target', defaultValue: 'baseNotebook', description: 'Image build target e.g. baseNotebook')
 		string(name: 'Framework', defaultValue: '', description: 'tensorflow,pytorch.')
@@ -19,6 +21,7 @@ pipeline{
     environment {
 		BUILDSH = ''
         PUSHSH = ''
+        CREDENTIALID =''
     }
 
     stages{
@@ -56,6 +59,8 @@ pipeline{
                     PUSHSH = img.genPushSh(map)
                     // println "${env.PUSHSH}"
                     println "${PUSHSH}"
+
+                    CREDENTIALID = cfg[params.Target].pushCredentialId
                     
 
                 }
@@ -66,9 +71,10 @@ pipeline{
                 container('tools') { 
                     script{
                         echo "gen images"
-                        println "${BUILDSH}"
-                        sh "${BUILDSH}"
-
+                        retry(3) {
+                            println "${BUILDSH}"
+                            sh "${BUILDSH}"
+                        }
                     }
                 }
             }
@@ -78,8 +84,15 @@ pipeline{
                 container('tools') { 
                     script{
                         echo "push images"
-                        println "${PUSHSH}"
-                        sh "${PUSHSH}"
+                        retry(3) {
+                            if (image.credentialId != '') {
+                                withCredentials([usernamePassword(credentialsId: ${CREDENTIALID}, passwordVariable: 'PASSWD', usernameVariable: 'USER')]) {
+                                    sh "docker login ${params.REGISTRY}/${params.OWNER} -u ${USER} -p ${PASSWD}"
+                                }
+                            }
+                            println "${PUSHSH}"
+                            sh "${PUSHSH}"
+                        }
                     }
                 }
             }
