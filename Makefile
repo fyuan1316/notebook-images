@@ -131,7 +131,7 @@ pytorch-tutorial:
 push-pytorch-tutorial:
 	docker push ${REGISTRY}/${OWNER}/${PytorchNotebook}-tutorial:${PYTORCH_VERSION}
 
-TRAINING_TF_VERSION=1.14
+TRAINING_TF_VERSION=1.14.0
 TRAINING_PYTORCH_VERSION=1.1.0
 TRAINING_PYTORCH_TAG=1.1.0-cuda10.0-cudnn7.5-runtime 
 PYTHON_VERSION=-py3
@@ -145,7 +145,7 @@ push-tf:
 
 sync-tf-gpu:
 	docker build --build-arg BASE_CONTAINER=tensorflow/tensorflow:${TRAINING_TF_VERSION}-gpu${PYTHON_VERSION}  \
-	-t ${REGISTRY}/${OWNER}/tensorflow:${TRAINING_TF_VERSION}-gpu \
+	-t ${REGISTRY}/${OWNER}/tensorflow:${TRAINING_TF_VERSION}-${GPUTag} \
 	-f sync/Dockerfile sync
 push-tf-gpu:
 	docker push ${REGISTRY}/${OWNER}/tensorflow:${TRAINING_TF_VERSION}-gpu
